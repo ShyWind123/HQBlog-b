@@ -23,5 +23,16 @@
             <artifactId>HQBlog-service</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>com.shywind.hqblog</groupId>
+            <artifactId>HQBlog-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+            <version>5.10.2</version>
+        </dependency>
     </dependencies>
 </project>

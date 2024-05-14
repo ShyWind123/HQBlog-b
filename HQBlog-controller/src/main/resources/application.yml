@@ -1,3 +1,28 @@
 server:
   port:
     2002
+spring:
+  mail:
+    host:
+      smtp.qq.com
+    username:
+#      发送者邮箱
+      2513561399@qq.com
+    password:
+#      发送者邮箱授权值
+      kseykeenitofdidh
+    default-encoding:
+      utf-8
+  data:
+    redis:
+      port: 6379
+      host: 8.134.215.31
+      password: IamOP114514
+      jedis:
+        pool:
+          max-active: 8
+          max-wait: -1
+          max-idle: 500
+          min-idle: 0
+      lettuce:
+        shutdown-timeout: 0
