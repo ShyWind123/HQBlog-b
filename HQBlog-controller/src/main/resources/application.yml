@@ -26,3 +26,13 @@ spring:
           min-idle: 0
       lettuce:
         shutdown-timeout: 0
+  datasource:
+    url: jdbc:mysql://8.134.215.31:3306/HQBlog?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: IamOP114514
+logging:
+  level:
+    com.shywind.hqblog: INFO
+  pattern:
+    dateformat: HH:mm:ss
