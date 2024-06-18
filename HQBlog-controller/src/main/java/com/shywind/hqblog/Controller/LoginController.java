@@ -1,17 +1,15 @@
 package com.shywind.hqblog.Controller;
 
 import com.shywind.hqblog.Result.Result;
-import com.shywind.hqblog.VO.LoginCodeInfoVO;
-import com.shywind.hqblog.VO.LoginPasswordInfoVO;
-import com.shywind.hqblog.VO.RegisterInfoVO;
+import com.shywind.hqblog.DTO.LoginCodeInfoDTO;
+import com.shywind.hqblog.DTO.LoginPasswordInfoDTO;
+import com.shywind.hqblog.DTO.RegisterInfoDTO;
 import com.shywind.hqblog.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin
 public class LoginController {
     @Autowired
     private LoginService loginService;
@@ -36,7 +34,7 @@ public class LoginController {
      * @date 2024/5/29 11:35
      */
     @PostMapping("/login/password")
-    public Result loginByPassword(@RequestBody LoginPasswordInfoVO loginPasswordInfo){return loginService.loginByPassword(loginPasswordInfo);}
+    public Result loginByPassword(@RequestBody LoginPasswordInfoDTO loginPasswordInfo){return loginService.loginByPassword(loginPasswordInfo);}
 
     /**
      * @description TODO
@@ -57,7 +55,7 @@ public class LoginController {
      * @date 2024/5/29 11:49
      */
     @PostMapping("/login/code/submit")
-    public Result codeLoginSubmit(@RequestBody LoginCodeInfoVO loginCodeInfo) {
+    public Result codeLoginSubmit(@RequestBody LoginCodeInfoDTO loginCodeInfo) {
         return loginService.codeLoginSubmit(loginCodeInfo);
     }
 
@@ -70,7 +68,7 @@ public class LoginController {
      * @date 2024/5/21 14:01
      */
     @PostMapping("/register/submit")
-    public Result registerSubmit(@RequestBody RegisterInfoVO registerInfo) {
+    public Result registerSubmit(@RequestBody RegisterInfoDTO registerInfo) {
         return loginService.registerSubmit(registerInfo);
     }
 

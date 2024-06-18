@@ -13,6 +13,14 @@ spring:
       kseykeenitofdidh
     default-encoding:
       utf-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          port: 587
+          starttls:
+            enable: true
+            required: true
   data:
     redis:
       port: 6379
