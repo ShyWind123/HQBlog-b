@@ -72,8 +72,4 @@ public class LoginController {
         return loginService.registerSubmit(registerInfo);
     }
 
-    @GetMapping("/test")
-    public String test(String a) {
-        return a;
-    }
 }
