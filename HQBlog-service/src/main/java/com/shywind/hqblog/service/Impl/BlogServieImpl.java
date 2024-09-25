@@ -7,7 +7,7 @@ import com.shywind.hqblog.DTO.BlogDTO;
 import com.shywind.hqblog.Entity.Blog;
 import com.shywind.hqblog.Result.Result;
 import com.shywind.hqblog.Utils.RestHighLevelClientUtils;
-import com.shywind.hqblog.VO.AllBlogListVO;
+import com.shywind.hqblog.VO.ListBlogVO;
 import com.shywind.hqblog.VO.CreateBlogVO;
 import com.shywind.hqblog.VO.ViewBlogVO;
 import com.shywind.hqblog.mapper.BlogMapper;
@@ -50,7 +50,7 @@ public class BlogServieImpl implements BlogService {
     @Override
     public Result getNewBlogId(Integer uid) {
         // 清除该用户之前的空blog
-        List<Blog> blogs = blogMapper.getMyBlogs(uid);
+        List<Blog> blogs = blogMapper.getMyBlogs(uid, "创建",true);
         for(Blog blog:blogs){
             if (blog.isAllEmpty()) {
 //                System.out.println("删除"+blog.getId());
@@ -207,20 +207,19 @@ public class BlogServieImpl implements BlogService {
     @Override
     public Result getMyBlogs(Integer uid, String state) {
         // 获取原始blog数据
-        List<Blog> blogs = blogMapper.getMyBlogs(uid);
+        List<Blog> blogs = blogMapper.getMyBlogs(uid, state, false);
 
         // 处理blog数据
-        List<CreateBlogVO> myBlogs = new ArrayList<>();
+        List<ListBlogVO> myBlogList = new ArrayList<>();
         for (Blog blog : blogs) {
-            if (blog.getState().equals(state)) {
-                CreateBlogVO myBlog = new CreateBlogVO(blog);
-                myBlog.setTags(blogMapper.getTagsByBlogId(blog.getId()));
-                myBlogs.add(myBlog);
-            }
+            ListBlogVO listBlog = new ListBlogVO(blog);
+            listBlog.setTags(blogMapper.getTagsByBlogId(blog.getId()));
+            listBlog.setAuthor(userMapper.getUsernameByUid(blog.getUid()));
+            myBlogList.add(listBlog);
         }
 
         // 返回
-        return Result.success("获取个人博客成功！", myBlogs);
+        return Result.success("获取个人博客成功！", myBlogList);
     }
 
     /**
@@ -235,27 +234,27 @@ public class BlogServieImpl implements BlogService {
         // redis中有
         String redisKey = "HQBlog:blog:homeBlogList";
         if (redisTemplate.hasKey(redisKey)) {
-            List<AllBlogListVO> blogList = JSONArray.parseArray((String) redisTemplate.opsForValue().get(redisKey),AllBlogListVO.class);
-            return Result.success("获取所有博客成功！", blogList);
+            List<ListBlogVO> listBlogList = JSONArray.parseArray((String) redisTemplate.opsForValue().get(redisKey), ListBlogVO.class);
+            return Result.success("获取所有博客成功！", listBlogList);
         }
 
         // 获取原始blog数据
         List<Blog> blogs = blogMapper.getAllBlogs("发布",needContent);
 
         // 处理blog数据
-        List<AllBlogListVO> allBlogs = new ArrayList<>();
+        List<ListBlogVO> listBlogList = new ArrayList<>();
         for (Blog blog : blogs) {
-            AllBlogListVO allBlog = new AllBlogListVO(blog);
-            allBlog.setTags(blogMapper.getTagsByBlogId(blog.getId()));
-            allBlog.setAuthor(userMapper.getUsernaemByUid(blog.getUid()));
-            allBlogs.add(allBlog);
+            ListBlogVO listBlog = new ListBlogVO(blog);
+            listBlog.setTags(blogMapper.getTagsByBlogId(blog.getId()));
+            listBlog.setAuthor(userMapper.getUsernameByUid(blog.getUid()));
+            listBlogList.add(listBlog);
         }
 
         // 存入redis
-        rabbitTemplate.convertAndSend("saveHomeBlogListToRedis","",JSON.toJSONString(allBlogs));
+        rabbitTemplate.convertAndSend("saveHomeBlogListToRedis","",JSON.toJSONString(listBlogList));
 
         // 返回
-        return Result.success("获取所有博客成功！", allBlogs);
+        return Result.success("获取所有博客成功！", listBlogList);
     }
 
     /**
@@ -362,7 +361,7 @@ public class BlogServieImpl implements BlogService {
         // 设置ViewBlogVO
         ViewBlogVO viewBlogVO = new ViewBlogVO(blog);
         // 获取该博客的用户名
-        viewBlogVO.setAuthor(userMapper.getUsernaemByUid(blog.getUid()));
+        viewBlogVO.setAuthor(userMapper.getUsernameByUid(blog.getUid()));
         // 获取tags
         viewBlogVO.setTags(blogMapper.getTagsByBlogId(id));
         // 获取博客喜欢数

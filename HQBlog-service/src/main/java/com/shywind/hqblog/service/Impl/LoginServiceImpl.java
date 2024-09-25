@@ -1,6 +1,7 @@
 package com.shywind.hqblog.service.Impl;
 
 import com.alibaba.fastjson.JSON;
+import com.shywind.hqblog.Tools.MyTool;
 import com.shywind.hqblog.VO.LoginSuccessVO;
 import com.shywind.hqblog.Entity.UserInfo;
 import com.shywind.hqblog.VO.EmailCodeVO;
@@ -12,8 +13,6 @@ import com.shywind.hqblog.DTO.RegisterInfoDTO;
 import com.shywind.hqblog.mapper.LoginMapper;
 import com.shywind.hqblog.service.LoginService;
 import jakarta.annotation.Resource;
-import org.springframework.amqp.rabbit.annotation.Queue;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -173,7 +172,7 @@ public class LoginServiceImpl implements LoginService {
 
         UserInfo user = userList.get(0);
         // 密码错误
-        if (!user.getPassword().equals(loginPasswordInfo.getPassword())) {
+        if (!user.getPassword().equals(MyTool.getHashString(loginPasswordInfo.getPassword()))) {
             return Result.error("密码错误！");
         }
 
@@ -270,7 +269,7 @@ public class LoginServiceImpl implements LoginService {
 //        userInfo.setEmail(registerInfo.getEmail());
 //        userInfo.setPassword(registerInfo.getPassword());
         // 写入数据库
-        loginMapper.insertUser(registerInfo.getUsername(), registerInfo.getEmail(), registerInfo.getPassword());
+        loginMapper.insertUser(registerInfo.getUsername(), registerInfo.getEmail(), MyTool.getHashString(registerInfo.getPassword()));
 
         // 获取用户uid
         List<UserInfo> userList =  loginMapper.getUserByEmail(registerInfo.getEmail());

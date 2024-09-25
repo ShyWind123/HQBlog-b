@@ -1,10 +1,9 @@
 package com.shywind.hqblog.service.Impl;
 
 import com.shywind.hqblog.PO.HeatmapPO;
-import com.shywind.hqblog.PO.RankPO;
 import com.shywind.hqblog.PO.TagPO;
+import com.shywind.hqblog.Tools.MyTool;
 import com.shywind.hqblog.VO.HeatmapVO;
-import com.shywind.hqblog.VO.RankVO;
 import com.shywind.hqblog.VO.UserInfoVO;
 import com.shywind.hqblog.Entity.UserInfo;
 import com.shywind.hqblog.Result.Result;
@@ -23,7 +22,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -162,12 +160,14 @@ public class UserServiceImpl implements UserService {
         }
 
         // 原密码错误
-        if (!user.getPassword().equals(changePasswordDTO.getOldPassword())){
+        String oldPasswordHash = MyTool.getHashString(changePasswordDTO.getOldPassword());
+        if (!user.getPassword().equals(oldPasswordHash)){
             return Result.error("原密码错误！");
         }
 
         // 修改成功
-        user.setPassword(changePasswordDTO.getNewPassword());
+        String newPasswordHash = MyTool.getHashString(changePasswordDTO.getNewPassword());
+        user.setPassword(newPasswordHash);
         userMapper.updateById(user);
         return Result.success("修改密码成功！");
     }
@@ -235,5 +235,15 @@ public class UserServiceImpl implements UserService {
 
         // 返回
         return Result.success("获取热力图数据成功！", new HeatmapVO(heatmaps, totalCnt, maxCnt));
+    }
+
+    @Override
+    public void hashingPassword() {
+        List<UserInfo> users =  userMapper.selectList(null);
+        for (UserInfo userInfo: users) {
+            userInfo.setPassword(MyTool.getHashString(userInfo.getPassword()));
+//                System.out.println(hexString);
+            userMapper.updateById(userInfo);
+        }
     }
 }

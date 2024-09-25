@@ -6,7 +6,7 @@ import com.shywind.hqblog.PO.RankPO;
 import com.shywind.hqblog.PO.TagPO;
 import com.shywind.hqblog.Result.Result;
 import com.shywind.hqblog.Utils.RestHighLevelClientUtils;
-import com.shywind.hqblog.VO.AllBlogListVO;
+import com.shywind.hqblog.VO.ListBlogVO;
 import com.shywind.hqblog.VO.CreateBlogVO;
 import com.shywind.hqblog.VO.RankVO;
 import com.shywind.hqblog.mapper.BlogMapper;
@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -125,7 +124,7 @@ public class GlobalServiceImpl implements GlobalService {
         // 获取Blogs
         List<Blog> blogs = blogMapper.getAllBlogs("发布",false);
         // 返回对象
-        List<AllBlogListVO> blogVOs = new ArrayList<>();
+        List<ListBlogVO> blogVOs = new ArrayList<>();
 
         // 筛选
         for (Blog blog: blogs) {
@@ -141,9 +140,9 @@ public class GlobalServiceImpl implements GlobalService {
             }
 
             if (hasAlltags) {
-                AllBlogListVO blogVO = new AllBlogListVO(blog);
+                ListBlogVO blogVO = new ListBlogVO(blog);
                 blogVO.setTags(blogTags1);
-                blogVO.setAuthor(userMapper.getUsernaemByUid(blog.getUid()));
+                blogVO.setAuthor(userMapper.getUsernameByUid(blog.getUid()));
                 blogVOs.add(blogVO);
             }
         }
@@ -180,7 +179,7 @@ public class GlobalServiceImpl implements GlobalService {
         for (Blog blog : blogs) {
             CreateBlogVO blogVO = new CreateBlogVO(blog);
             blogVO.setTags(blogMapper.getTagsByBlogId(blog.getId()));
-            blogVO.setAuthor(userMapper.getUsernaemByUid(blog.getUid()));
+            blogVO.setAuthor(userMapper.getUsernameByUid(blog.getUid()));
             blogVOs.add(blogVO);
         }
 

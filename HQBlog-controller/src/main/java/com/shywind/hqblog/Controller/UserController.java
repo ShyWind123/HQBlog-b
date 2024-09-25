@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.NoSuchAlgorithmException;
+
 @RestController
 @CrossOrigin
 public class UserController {
@@ -41,4 +43,8 @@ public class UserController {
 
     @GetMapping("/user/heatmap")
     public Result getHeatmap(Integer uid, String type) {return userService.getHeatmap(uid, type);}
+
+    // 处理
+    @GetMapping("/user/hashing-password")
+    public void hashingPassword() throws NoSuchAlgorithmException {userService.hashingPassword();}
 }

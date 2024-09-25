@@ -20,5 +20,5 @@ public interface UserMapper extends BaseMapper<UserInfo> {
     List<HeatmapPO> getUserHeatmapByUid(Integer uid);
 
     @Select("SELECT username FROM user WHERE uid = #{uid}")
-    String getUsernaemByUid(Integer uid);
+    String getUsernameByUid(Integer uid);
 }

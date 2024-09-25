@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AllBlogListVO {
+public class ListBlogVO {
     private Integer id;
     private Integer uid;
     private String author;
@@ -19,7 +19,7 @@ public class AllBlogListVO {
     private String date;
     private String time;
     private String[] tags;
-    public AllBlogListVO(Blog blog){
+    public ListBlogVO(Blog blog){
         id = blog.getId();
         uid = blog.getUid();
         title = blog.getTitle();

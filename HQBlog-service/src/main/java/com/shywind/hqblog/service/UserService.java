@@ -6,6 +6,8 @@ import com.shywind.hqblog.DTO.ChangeUsernameDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.NoSuchAlgorithmException;
+
 @Component
 public interface UserService {
     Result changePassword(ChangePasswordDTO changePasswordDTO);
@@ -19,4 +21,6 @@ public interface UserService {
     Result getTags(Integer uid);
 
     Result getHeatmap(Integer uid, String type);
+
+    void hashingPassword() throws NoSuchAlgorithmException;
 }

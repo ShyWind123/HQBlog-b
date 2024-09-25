@@ -51,8 +51,12 @@ public interface BlogMapper extends BaseMapper<Blog> {
     String[] getTagsByBlogId(Integer id);
 
     // 获取某一用户的所有blog
-    @Select("SELECT * FROM blog WHERE uid = #{uid}")
-    List<Blog> getMyBlogs(Integer uid);
+    @Select("SELECT id,uid,title,summary,create_time,update_time,submit_time,state, " +
+            "CASE WHEN #{needContent} THEN content " +
+            "ELSE NULL " +
+            "END AS content " +
+            "FROM blog WHERE uid = #{uid} AND state = #{blogState}  ")
+    List<Blog> getMyBlogs(Integer uid,String blogState, Boolean needContent);
 
     // 获取所有用户的对应类型的blog
     @Select("SELECT id,uid,title,summary,create_time,update_time,submit_time,state, " +
