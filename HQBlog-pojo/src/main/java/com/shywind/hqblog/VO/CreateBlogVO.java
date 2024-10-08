@@ -1,5 +1,6 @@
 package com.shywind.hqblog.VO;
 
+import cn.hutool.core.util.ZipUtil;
 import com.shywind.hqblog.Entity.Blog;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,7 +25,7 @@ public class CreateBlogVO {
         uid = blog.getUid();
         title = blog.getTitle();
         summary = blog.getSummary();
-        content = blog.getContent();
+        content = ZipUtil.unGzip(blog.getContent(),"utf-8");
         state = blog.getState();
         if (state.equals("发布")) {
             String dateTime = blog.getSubmitTime();

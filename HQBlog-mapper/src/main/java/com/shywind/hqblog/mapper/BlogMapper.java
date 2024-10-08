@@ -117,11 +117,11 @@ public interface BlogMapper extends BaseMapper<Blog> {
     void addILike(Integer id, Integer uid);
 
     // 是否有看过的记录
-    @Select("SELECT COUNT(*) = 1 FROM blog_view_relation WHERE blog_id = #{id} AND uid = #{uid}")
-    Boolean hasView(Integer id, Integer uid);
+//    @Select("SELECT COUNT(*) = 1 FROM blog_view_relation WHERE blog_id = #{id} AND uid = #{uid}")
+//    Boolean hasView(Integer id, Integer uid);
 
     // 添加看过记录
-    @Insert("INSERT INTO blog_view_relation(blog_id, uid) VALUES (#{id}, #{uid})")
+    @Insert("INSERT INTO blog_view_relation(blog_id, uid, time) VALUES (#{id}, #{uid}, NOW())")
     void addView(Integer id, Integer uid);
 
     // 查看该blog-tag是否已经有了

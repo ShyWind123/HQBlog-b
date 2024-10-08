@@ -1,5 +1,6 @@
 package com.shywind.hqblog.VO;
 
+import cn.hutool.core.util.ZipUtil;
 import com.shywind.hqblog.Entity.Blog;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +27,7 @@ public class ViewBlogVO {
         uid = blog.getUid();
         title = blog.getTitle();
         summary = blog.getSummary();
-        content = blog.getContent();
+        content = ZipUtil.unGzip(blog.getContent(),"utf-8");;
         date = blog.getSubmitTime().split(" ")[0];
     }
 }

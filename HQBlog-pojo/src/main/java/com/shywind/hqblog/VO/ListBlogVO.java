@@ -1,5 +1,6 @@
 package com.shywind.hqblog.VO;
 
+import cn.hutool.core.util.ZipUtil;
 import com.shywind.hqblog.Entity.Blog;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,7 +15,6 @@ public class ListBlogVO {
     private String author;
     private String title;
     private String summary;
-    private String content;
     private String state;
     private String date;
     private String time;
@@ -24,7 +24,6 @@ public class ListBlogVO {
         uid = blog.getUid();
         title = blog.getTitle();
         summary = blog.getSummary();
-        content = blog.getContent();
         state = blog.getState();
         if (state.equals("发布")) {
             String dateTime = blog.getSubmitTime();

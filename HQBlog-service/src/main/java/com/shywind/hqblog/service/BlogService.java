@@ -24,4 +24,6 @@ public interface BlogService {
     Result toggleLike(Integer id, Integer uid);
 
     Result addAllBlogsToES();
+
+    // void convertContentFromStringToByte();
 }

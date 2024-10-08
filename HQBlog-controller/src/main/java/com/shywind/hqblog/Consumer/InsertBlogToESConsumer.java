@@ -1,5 +1,6 @@
 package com.shywind.hqblog.Consumer;
 
+import cn.hutool.core.util.ZipUtil;
 import com.alibaba.fastjson.JSON;
 import com.rabbitmq.client.Channel;
 import com.shywind.hqblog.Entity.Blog;
@@ -24,6 +25,7 @@ public class InsertBlogToESConsumer {
             ackMode = "MANUAL")
     public void esInsertBlog(String blogStr, @Header(AmqpHeaders.DELIVERY_TAG) long deliverTag, Channel channel) throws IOException, InterruptedException {
         Blog blog = JSON.parseObject(blogStr, Blog.class);
+
         blog.removeContentPic();
         try {
             RestHighLevelClientUtils clientUtils = new RestHighLevelClientUtils();

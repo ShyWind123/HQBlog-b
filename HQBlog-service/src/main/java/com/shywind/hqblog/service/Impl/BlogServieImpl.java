@@ -1,5 +1,6 @@
 package com.shywind.hqblog.service.Impl;
 
+import cn.hutool.core.util.ZipUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -109,13 +110,15 @@ public class BlogServieImpl implements BlogService {
         // 写入基本信息
         blog.setTitle(blogDTO.getTitle());
         blog.setSummary(blogDTO.getSummary());
-        blog.setContent(blogDTO.getContent());
+        // 压缩文本
+        blog.setContent(ZipUtil.gzip(blogDTO.getContent(), "utf-8"));
+        blog.setRealContent(blogDTO.getContent());
         blog.setUpdateTime(formatter.format(LocalDateTime.now()));
         if (!blog.getState().equals("发布")) {
             blog.setState(blogDTO.getState());
         }
         if (blogDTO.getState().equals("草稿") && blog.getTitle().equals("")) {
-            blog.setTitle(formatter.format(LocalDateTime.now()).toString());
+            blog.setTitle(formatter.format(LocalDateTime.now()));
         }
         blogMapper.updateById(blog);
 
@@ -351,7 +354,7 @@ public class BlogServieImpl implements BlogService {
         }
 
         // 非作者查看时，增加views
-        if (uid != blog.getUid() && !blogMapper.hasView(id, uid)) {
+        if (uid != blog.getUid()) {
             // 写进数据库
             blogMapper.addView(id, uid);
             // 删除 redis中 对 用户排行的缓存
@@ -431,9 +434,7 @@ public class BlogServieImpl implements BlogService {
 
         return Result.success();
     }
-
     public void addABlogToES(Blog blog) {
-        blog.removeContentPic();
         try {
             RestHighLevelClientUtils clientUtils = new RestHighLevelClientUtils();
             clientUtils.postBlog(blog);
@@ -452,4 +453,12 @@ public class BlogServieImpl implements BlogService {
         String redisKey = "HQBlog:global:homeRankList";
         redisTemplate.delete(redisKey);
     }
+
+    /* public void convertContentFromStringToByte() {
+        List<Blog> blogs = blogMapper.getAllBlogs("发布",true);
+        for(Blog  blog:blogs){
+            blog.setContent(ZipUtil.gzip(blog.getContent(),"utf-8"));
+            blogMapper.updateById(blog);
+        }
+    } */
 }

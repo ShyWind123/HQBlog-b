@@ -30,6 +30,9 @@ public class RestHighLevelClientUtils {
     }
 
     public void postBlog(Blog blog) {
+        // 将blog中的content解压
+        blog.setContent(blog.getContent());
+
         // 1.创建Request
         BulkRequest request = new BulkRequest();
 

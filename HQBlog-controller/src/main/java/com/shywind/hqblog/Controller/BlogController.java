@@ -45,4 +45,9 @@ public class BlogController {
     public Result addAllBlogsToES(){
         return blogService.addAllBlogsToES();
     }
+
+    /*@GetMapping("/blog/convert_content_string_to_byte")
+    public void convertContentFromStringToByte(){
+        blogService.convertContentFromStringToByte();
+    }*/
 }
