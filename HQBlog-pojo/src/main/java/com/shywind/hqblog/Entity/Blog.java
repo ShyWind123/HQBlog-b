@@ -49,7 +49,7 @@ public class Blog {
     }
 
     public boolean isAllEmpty() {
-        if (content.length == 0) {
+        if (content==null||content.length == 0) {
             return true;
         }
         return false;

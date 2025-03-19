@@ -51,7 +51,7 @@ public class LoginServiceImpl implements LoginService {
      * @date 2024/5/29 10:46
      */
     Result sendEmailCode (String email) {
-        // 设置refis key
+        // 设置redis key
         String redisKey = String.format("HQBlog:user:mailCode:%s", email);
         // 查看是否在一分钟内发送过验证码
         if(redisTemplate.hasKey(redisKey) && redisTemplate.getExpire(redisKey) > 500) {
@@ -138,7 +138,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     /**
-     * @description TODO 
+     * @description 通过验证码登录
      * @params email       
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -156,7 +156,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     /**
-     * @description TODO
+     * @description 通过密码登录
      * @params loginInfo
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -182,14 +182,14 @@ public class LoginServiceImpl implements LoginService {
 
         // 获取token
         String token = getJWTToken(loginPasswordInfo.getEmail());
-        LoginSuccessVO lsDTO = new LoginSuccessVO(user.getUid(),token);
+        LoginSuccessVO lsVO = new LoginSuccessVO(user.getUid(),token);
 
         // 成功登录
-        return Result.success("登录成功！", lsDTO);
+        return Result.success("登录成功！", lsVO);
     }
 
     /**
-     * @description TODO
+     * @description 通过验证码注册
      * @params email
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -207,7 +207,7 @@ public class LoginServiceImpl implements LoginService {
     }
     
     /**
-     * @description TODO 
+     * @description 登录的验证码提交
      * @params loginPasswordInfo       
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -236,14 +236,14 @@ public class LoginServiceImpl implements LoginService {
 
         // 获取token
         String token = getJWTToken(loginCodeInfo.getEmail());
-        LoginSuccessVO lsDTO = new LoginSuccessVO(user.getUid(),token);
+        LoginSuccessVO lsVO = new LoginSuccessVO(user.getUid(),token);
 
         // 成功登录
-        return Result.success("登录成功！", lsDTO);
+        return Result.success("登录成功！", lsVO);
     }
     
     /**
-     * @description TODO 
+     * @description 注册的验证码提交
      * @params registerInfo       
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -280,12 +280,13 @@ public class LoginServiceImpl implements LoginService {
 
         // 获取token
         String token = getJWTToken(registerInfo.getEmail());
-        LoginSuccessVO lsDTO = new LoginSuccessVO(user.getUid(),token);
+        LoginSuccessVO lsVO = new LoginSuccessVO(user.getUid(),token);
 
         // 返回
-        return Result.success("注册成功！", lsDTO);
+        return Result.success("注册成功！", lsVO);
     }
 
+    // 生成JWT TOKEN
     public String getJWTToken(String email) {
         // 获取用户信息
         List<UserInfo> userList = loginMapper.getUserByEmail(email);

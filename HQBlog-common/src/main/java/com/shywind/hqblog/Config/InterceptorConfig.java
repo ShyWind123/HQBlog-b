@@ -7,11 +7,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer {
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new JWTInterceptors())
-                .addPathPatterns("/test");
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(new JWTInterceptors())
+//                .addPathPatterns("/**")
 //                .excludePathPatterns("/login/**")
 //                .excludePathPatterns("/register/**");
-    }
+//    }
 }

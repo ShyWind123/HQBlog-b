@@ -20,7 +20,9 @@ public class LoginController {
     }
 
     @PostMapping("/login/password")
-    public Result loginByPassword(@RequestBody LoginPasswordInfoDTO loginPasswordInfo){return loginService.loginByPassword(loginPasswordInfo);}
+    public Result loginByPassword(@RequestBody LoginPasswordInfoDTO loginPasswordInfo){
+        return loginService.loginByPassword(loginPasswordInfo);
+    }
 
     @GetMapping("/register/code")
     public Result sendRegisterEmail(String email){ return loginService.sendRegisterEmailCode(email);}

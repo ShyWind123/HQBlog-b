@@ -50,7 +50,7 @@ public interface BlogMapper extends BaseMapper<Blog> {
             "WHERE btr.blog_id = #{id} AND t.cnt > 0;")
     String[] getTagsByBlogId(Integer id);
 
-    // 获取某一用户的所有blog
+    // 获取某一用户的对应状态的所有blog
     @Select("SELECT id,uid,title,summary,create_time,update_time,submit_time,state, " +
             "CASE WHEN #{needContent} THEN content " +
             "ELSE NULL " +
@@ -58,7 +58,7 @@ public interface BlogMapper extends BaseMapper<Blog> {
             "FROM blog WHERE uid = #{uid} AND state = #{blogState}  ")
     List<Blog> getMyBlogs(Integer uid,String blogState, Boolean needContent);
 
-    // 获取所有用户的对应类型的blog
+    // 获取所有用户的对应状态的所有blog
     @Select("SELECT id,uid,title,summary,create_time,update_time,submit_time,state, " +
             "CASE WHEN #{needContent} THEN content " +
             "ELSE NULL " +

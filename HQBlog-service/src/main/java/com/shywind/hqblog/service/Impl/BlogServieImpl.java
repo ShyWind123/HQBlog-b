@@ -14,11 +14,14 @@ import com.shywind.hqblog.VO.ViewBlogVO;
 import com.shywind.hqblog.mapper.BlogMapper;
 import com.shywind.hqblog.mapper.UserMapper;
 import com.shywind.hqblog.service.BlogService;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -39,10 +42,13 @@ public class BlogServieImpl implements BlogService {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    //创建日志对象 Logger
+    static final Logger logger = Logger.getLogger(BlogServieImpl.class);
+
     DateTimeFormatter formatter= DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
-     * @description TODO
+     * @description 获取新博客ID
      * @params uid
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -72,7 +78,6 @@ public class BlogServieImpl implements BlogService {
         // 获得id
 //        Long id = cnt + 1;
         Integer id = cnt + 1;
-        System.out.println("获取新ID："+id);
 
         // 写入数据库
         Blog newBlog = new Blog(Math.toIntExact(id),uid);
@@ -81,13 +86,17 @@ public class BlogServieImpl implements BlogService {
 //        newBlog.setUid(uid);
 //        newBlog.setState("创建");
 //        newBlog.setCreateTime(formatter.format(LocalDateTime.now()));
-        blogMapper.insert(newBlog);
+        try{
+            blogMapper.insert(newBlog);
+        } catch (Exception e){
+            logger.error(e);
+        }
 
         return Result.success("成功获取新博客ID！", id);
     }
 
     /**
-     * @description TODO
+     * @description 保存博客
      * @params blogDTO
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -104,7 +113,7 @@ public class BlogServieImpl implements BlogService {
             return Result.error("不存在该Id！");
         }
 
-        // 查看是否是修改
+        // 查看是否是修改状态
         Boolean isUpdate = blog.getState().equals("发布");
 
         // 写入基本信息
@@ -133,7 +142,7 @@ public class BlogServieImpl implements BlogService {
             // 有则更新
             if (blogMapper.hasTag(tag)) {
                 blogMapper.addTagCnt(tag);
-            } else { // 无则插入[-
+            } else { // 无则插入
                 blogMapper.insertTag(tag);
             }
 
@@ -176,7 +185,7 @@ public class BlogServieImpl implements BlogService {
     }
 
     /**
-     * @description TODO
+     * @description 获取博客信息
      * @params id
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -201,7 +210,7 @@ public class BlogServieImpl implements BlogService {
     }
 
     /**
-     * @description TODO
+     * @description 获取当前用户的所有博客信息，用于用户主页的博客列表
      * @params uid
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -226,7 +235,7 @@ public class BlogServieImpl implements BlogService {
     }
 
     /**
-     * @description TODO
+     * @description 获取所有博客信息，用于主页的博客列表
      * @params
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -261,7 +270,7 @@ public class BlogServieImpl implements BlogService {
     }
 
     /**
-     * @description TODO
+     * @description 将主页的博客列表保存至redis
      * @params blogListStr
      * @return void
      * @author ShyWind
@@ -278,7 +287,7 @@ public class BlogServieImpl implements BlogService {
     }
 
     /**
-     * @description TODO 
+     * @description 删除博客
      * @params id
     deleteState
      * @return com.shywind.hqblog.Result.Result
@@ -336,7 +345,7 @@ public class BlogServieImpl implements BlogService {
     }
 
     /**
-     * @description TODO
+     * @description 获得查看的博客信息
      * @params id
     uid
      * @return com.shywind.hqblog.Result.Result
@@ -382,7 +391,7 @@ public class BlogServieImpl implements BlogService {
     }
 
     /**
-     * @description TODO
+     * @description 切换点赞
      * @params id
     uid
      * @return com.shywind.hqblog.Result.Result
@@ -418,13 +427,7 @@ public class BlogServieImpl implements BlogService {
         return Result.success("切换博客喜欢成功！");
     }
 
-    /**
-     * @description TODO
-     * @params
-     * @return com.shywind.hqblog.Result.Result
-     * @author ShyWind
-     * @date 2024/7/12 16:29
-     */
+    // 添加所有博客信息到ES
     public Result addAllBlogsToES(){
         List<Blog> blogs = blogMapper.selectList(new QueryWrapper<Blog>());
 
@@ -434,6 +437,7 @@ public class BlogServieImpl implements BlogService {
 
         return Result.success();
     }
+    // 添加当前博客信息到ES
     public void addABlogToES(Blog blog) {
         try {
             RestHighLevelClientUtils clientUtils = new RestHighLevelClientUtils();
@@ -444,11 +448,12 @@ public class BlogServieImpl implements BlogService {
         }
     }
 
-
+    // 从redis中删除主页博客列表的缓存
     public void deleteHomeBlogListFromRedis(){
         String redisKey = "HQBlog:blog:homeBlogList";
         redisTemplate.delete(redisKey);
     }
+    // 从redis中删除主页排行列表的缓存
     public void deleteHomeRankListFromRedis(){
         String redisKey = "HQBlog:global:homeRankList";
         redisTemplate.delete(redisKey);

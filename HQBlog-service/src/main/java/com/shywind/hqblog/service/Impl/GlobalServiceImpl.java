@@ -39,7 +39,7 @@ public class GlobalServiceImpl implements GlobalService {
     private RabbitTemplate rabbitTemplate;
 
     /**
-     * @description TODO
+     * @description 获取用户排行
      * @params
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -79,7 +79,7 @@ public class GlobalServiceImpl implements GlobalService {
     }
 
     /**
-     * @description TODO
+     * @description 将排行数据存入redis
      * @params rankListStr
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -96,7 +96,7 @@ public class GlobalServiceImpl implements GlobalService {
     }
 
     /**
-     * @description TODO
+     * @description 获取所有标签
      * @params
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -112,10 +112,9 @@ public class GlobalServiceImpl implements GlobalService {
     }
 
     /**
+     * @description 通过标签搜索博客
      * @param tags
      * @return com.shywind.hqblog.Result.Result
-     * @description TODO
-     * @params
      * @author ShyWind
      * @date 2024/6/17 21:42
      */
@@ -151,21 +150,8 @@ public class GlobalServiceImpl implements GlobalService {
         return Result.success("获取含有特定标签的博客成功！",blogVOs);
     }
 
-    public List<Blog> searchBlogsFromES(String text) {
-
-        RestHighLevelClientUtils clientUtils = new RestHighLevelClientUtils();
-        List<Blog> list = clientUtils.searchBlogs(text);
-        try{
-            clientUtils.close();
-            return list;
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return  list;
-    }
-
     /**
-     * @description TODO
+     * @description 通过文字搜索博客
      * @params text
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -186,4 +172,19 @@ public class GlobalServiceImpl implements GlobalService {
         // 返回
         return Result.success("获取含有特定内容的博客成功！",blogVOs);
     }
+
+    // 从elasticsearch中搜索博客
+    public List<Blog> searchBlogsFromES(String text) {
+
+        RestHighLevelClientUtils clientUtils = new RestHighLevelClientUtils();
+        List<Blog> list = clientUtils.searchBlogs(text);
+        try{
+            clientUtils.close();
+            return list;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return  list;
+    }
+
 }

@@ -66,13 +66,14 @@ public class RestHighLevelClientUtils {
     }
 
     public List<Blog> searchBlogs(String text){
+        // 结果列表
+        List<Blog> list = new ArrayList<>();
+
         // 1.准备Request
         SearchRequest request = new SearchRequest("blog");
         // 2.准备DSL
         request.source()
                 .query(QueryBuilders.multiMatchQuery(text,"title", "summary", "content"));
-
-        List<Blog> list = new ArrayList<>();
 
         try{
             // 3.发送请求

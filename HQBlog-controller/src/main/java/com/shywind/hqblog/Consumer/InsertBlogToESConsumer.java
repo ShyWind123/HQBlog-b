@@ -1,6 +1,5 @@
 package com.shywind.hqblog.Consumer;
 
-import cn.hutool.core.util.ZipUtil;
 import com.alibaba.fastjson.JSON;
 import com.rabbitmq.client.Channel;
 import com.shywind.hqblog.Entity.Blog;

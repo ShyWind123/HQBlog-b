@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     private RedisTemplate<String,Object> redisTemplate;
 
     /**
-     * @description TODO
+     * @description 获取用户信息
      * @params uid
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService {
         // 返回DTO
         UserInfoVO userInfo = new UserInfoVO(user);
 
+        // 获取用户发表博客数，获得点赞数，浏览量
         Integer blogs = blogMapper.getBlogCnt(uid);
         Integer likes = blogMapper.getBlogsLikes(uid);
         Integer views = blogMapper.getBlogsViews(uid);
@@ -70,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
     
     /**
-     * @description TODO 
+     * @description 修改用户名
      * @params changeUsernameVO       
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -98,7 +99,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @description TODO
+     * @description 修改用户头像
      * @params uid
     multipartFile
      * @return com.shywind.hqblog.Result.Result
@@ -143,7 +144,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @description TODO 
+     * @description 修改密码
      * @params changePasswordVO       
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -173,7 +174,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @description TODO 
+     * @description 获取用户发表过博客中包含的所有标签
      * @params uid       
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -195,7 +196,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @description TODO
+     * @description 获取用户发表博客的热力图数据
      * @params uid
      * @return com.shywind.hqblog.Result.Result
      * @author ShyWind
@@ -237,6 +238,7 @@ public class UserServiceImpl implements UserService {
         return Result.success("获取热力图数据成功！", new HeatmapVO(heatmaps, totalCnt, maxCnt));
     }
 
+    // 将用户密码用SHA-256 hash加密
     @Override
     public void hashingPassword() {
         List<UserInfo> users =  userMapper.selectList(null);
